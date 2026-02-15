@@ -7,6 +7,8 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 
+export const runtime = "nodejs";
+
 const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin", "latin-ext"],
@@ -26,8 +28,15 @@ export const metadata: Metadata = {
 };
 
 async function getDisclaimer() {
-  const setting = await prisma.siteSetting.findUnique({ where: { key: "disclaimer" } });
-  return setting?.value ?? "";
+  try {
+    const client = prisma as typeof prisma & { siteSetting?: typeof prisma.siteSetting };
+    if (!client.siteSetting) return "";
+    const setting = await client.siteSetting.findUnique({ where: { key: "disclaimer" } });
+    return setting?.value ?? "";
+  } catch (err) {
+    console.error("Failed to load disclaimer setting", err);
+    return "";
+  }
 }
 
 export default async function RootLayout({
