@@ -18,16 +18,23 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "partySlug is required" }, { status: 400 });
     }
 
-    const cookieStore = await cookies();
-    const token = cookieStore.get(VOTER_COOKIE)?.value;
-    if (!token) {
+    const ip = getClientIp(request);
+
+    // Hard block per IP regardless of token/browser/incognito
+    const existingIpVote = await prisma.pollVote.findUnique({
+      where: { ipAddress: ip },
+      select: { id: true },
+    });
+    if (existingIpVote) {
       return NextResponse.json(
-        { error: "Cookie missing. Please refresh the page and try again." },
-        { status: 400 }
+        { error: "already_voted", message: "Z vašega omrežja/IP je glas že oddan." },
+        { status: 409 }
       );
     }
 
-    const ip = getClientIp(request);
+    // Token retained for traceability, but not used for uniqueness anymore
+    const cookieStore = await cookies();
+    const token = cookieStore.get(VOTER_COOKIE)?.value ?? "token-not-used";
 
     const party = await prisma.party.findUnique({
       where: { slug: partySlug },

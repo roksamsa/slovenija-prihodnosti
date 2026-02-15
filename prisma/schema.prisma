@@ -39,7 +39,7 @@ model PollVote {
   createdAt  DateTime @default(now())
   party      Party    @relation(fields: [partyId], references: [id], onDelete: Cascade)
 
-  @@unique([ipAddress, voterToken])
+  @@unique([ipAddress]) // strict: one vote per IP
   @@index([partyId])
 }
 

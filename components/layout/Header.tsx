@@ -22,7 +22,7 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
       <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         {/* Logo - Slovenian flag colors */}
-        <Link href="/" className="flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-[var(--slovenia-blue)] focus:ring-offset-2 rounded">
+        <Link href="/" className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-[var(--slovenia-blue)] focus:ring-offset-2 rounded">
           <span
             className="text-xl font-semibold tracking-tight sm:text-2xl"
             style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
@@ -31,6 +31,9 @@ export function Header() {
             <span className="text-slate-800"> prihodnosti</span>
           </span>
           <span className="h-1 w-10 rounded-full bg-[var(--slovenia-red)]" aria-hidden />
+          <span className="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] font-semibold uppercase text-slate-600 shadow-sm">
+            v0.0.1 · beta
+          </span>
         </Link>
 
         {/* Desktop nav */}
