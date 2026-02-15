@@ -205,6 +205,12 @@ export function UserPoll() {
           <div className="flex flex-wrap items-end gap-3">
             <label className="flex-1 min-w-[200px]">
               <span className="sr-only">Stranka</span>
+              {/** Sort alphabetically for selection, keep results order elsewhere */}
+              {(() => {
+                const sorted = [...results].sort((a, b) =>
+                  a.party.name.localeCompare(b.party.name, "sl", { sensitivity: "base" })
+                );
+                return (
               <select
                 value={selectedSlug}
                 onChange={(e) => setSelectedSlug(e.target.value)}
@@ -212,12 +218,14 @@ export function UserPoll() {
                 disabled={voting}
               >
                 <option value="">— Izberi stranko —</option>
-                {results.map((r) => (
+                {sorted.map((r) => (
                   <option key={r.party.id} value={r.party.slug}>
                     {r.party.name} ({r.party.abbreviation})
                   </option>
                 ))}
               </select>
+                );
+              })()}
             </label>
             <button
               type="button"
