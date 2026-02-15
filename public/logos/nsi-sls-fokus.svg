@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+  <rect width="160" height="160" rx="20" fill="#005DA4"/>
+  <text x="50%" y="52%" font-family="Inter, Arial, sans-serif" font-size="40" font-weight="700" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">
+    NSi
+  </text>
+  <text x="50%" y="74%" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="600" fill="#E6F3FF" text-anchor="middle" dominant-baseline="middle">
+    SLS · FOKUS
+  </text>
+</svg>

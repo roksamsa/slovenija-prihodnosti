@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+  <rect width="160" height="160" rx="20" fill="#6B8E23"/>
+  <text x="50%" y="55%" font-family="Inter, Arial, sans-serif" font-size="44" font-weight="800" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">
+    PVP
+  </text>
+  <text x="50%" y="74%" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="600" fill="#EDF3E0" text-anchor="middle" dominant-baseline="middle">
+    Prerod
+  </text>
+</svg>

@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+/* Slovenian flag colors */
+:root {
+  --slovenia-white: #ffffff;
+  --slovenia-blue: #003da5;
+  --slovenia-red: #ed1c24;
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-dm-sans);
+  --font-serif: var(--font-playfair);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Sticky column for comparison table */
+.sticky-col {
+  position: sticky;
+  left: 0;
+  z-index: 10;
+  background: inherit;
+  box-shadow: 4px 0 8px -2px rgba(0, 0, 0, 0.06);
+}

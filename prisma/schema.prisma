@@ -1,0 +1,182 @@
+// Slovenija Prihodnosti - Prisma schema
+// Database: PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Party {
+  id          String   @id @default(cuid())
+  name        String
+  abbreviation String
+  slug        String   @unique
+  logoUrl     String?
+  color       String   // hex e.g. #003DA5
+  website     String?
+  programUrl  String?
+  description String?
+  foundedYear Int?
+  leaderName  String?
+  leaderPhotoUrl String?
+  ideology      String?
+  coalition     String?
+  previousSeats Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  policyStances   PartyPolicyStance[]
+  programSections PartyProgram[]
+  pollData        PollData[]
+  pollVotes       PollVote[]
+}
+
+// One vote per (IP + voter token). Same IP, different devices (tokens) = can vote (e.g. family).
+model PollVote {
+  id         String   @id @default(cuid())
+  partyId    String
+  ipAddress  String   // for rate limiting / one-per-IP+device
+  voterToken String  // cookie: one vote per browser/device
+  createdAt  DateTime @default(now())
+
+  party Party @relation(fields: [partyId], references: [id], onDelete: Cascade)
+
+  @@unique([ipAddress, voterToken])
+  @@index([partyId])
+}
+
+model PolicyComparison {
+  id       String   @id @default(cuid())
+  category String   // e.g. "Zunanja politika", "Socialna politika"
+  question String   // statement text
+  orderIndex Int    @default(0)
+  createdAt DateTime @default(now())
+
+  stances PartyPolicyStance[]
+}
+
+model PartyPolicyStance {
+  id        String   @id @default(cuid())
+  partyId   String
+  policyId  String
+  value     Boolean? // true = supports, false = doesn't, null = unknown
+  note      String?
+  createdAt DateTime @default(now())
+
+  party  Party           @relation(fields: [partyId], references: [id], onDelete: Cascade)
+  policy PolicyComparison @relation(fields: [policyId], references: [id], onDelete: Cascade)
+
+  @@unique([partyId, policyId])
+  @@index([policyId])
+  @@index([partyId])
+}
+
+model PartyProgram {
+  id          String   @id @default(cuid())
+  partyId     String
+  sectionTitle String
+  content     String   // markdown/rich text
+  orderIndex  Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  party Party @relation(fields: [partyId], references: [id], onDelete: Cascade)
+
+  @@index([partyId])
+}
+
+model NationalSegment {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  icon        String   // Lucide icon name
+  description String?
+  orderIndex  Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  needs       NationalNeed[]
+  suggestions NeedSuggestion[]
+}
+
+// User-submitted suggestions; shown only when status = APPROVED
+model NeedSuggestion {
+  id          String   @id @default(cuid())
+  segmentId   String
+  title       String
+  description String   @db.Text
+  authorEmail String
+  status      String   @default("PENDING") // PENDING | APPROVED | REJECTED
+  likesCount  Int      @default(0)
+  dislikesCount Int    @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  segment NationalSegment  @relation(fields: [segmentId], references: [id], onDelete: Cascade)
+  votes   SuggestionVote[]
+
+  @@index([segmentId])
+  @@index([status])
+}
+
+// One like/dislike per voter token per suggestion
+model SuggestionVote {
+  id           String   @id @default(cuid())
+  suggestionId String
+  voterToken   String
+  value        Int      // 1 = like, -1 = dislike
+  createdAt    DateTime @default(now())
+
+  suggestion NeedSuggestion @relation(fields: [suggestionId], references: [id], onDelete: Cascade)
+
+  @@unique([suggestionId, voterToken])
+  @@index([suggestionId])
+}
+
+model NationalNeed {
+  id            String   @id @default(cuid())
+  segmentId     String
+  title         String
+  description   String?
+  priority      Int      @default(0)
+  orderIndex    Int      @default(0)
+  likesCount    Int      @default(0)
+  dislikesCount Int      @default(0)
+  createdAt     DateTime @default(now())
+
+  segment NationalSegment @relation(fields: [segmentId], references: [id], onDelete: Cascade)
+  votes   NeedVote[]
+
+  @@index([segmentId])
+}
+
+// One like/dislike per voter token per need (seed tiles)
+model NeedVote {
+  id            String   @id @default(cuid())
+  nationalNeedId String
+  voterToken   String
+  value        Int      // 1 = like, -1 = dislike
+  createdAt    DateTime @default(now())
+
+  need NationalNeed @relation(fields: [nationalNeedId], references: [id], onDelete: Cascade)
+
+  @@unique([nationalNeedId, voterToken])
+  @@index([nationalNeedId])
+}
+
+model PollData {
+  id         String   @id @default(cuid())
+  partyId    String
+  percentage Float
+  pollSource String
+  pollDate   DateTime
+  sampleSize Int?
+  createdAt  DateTime @default(now())
+
+  party Party @relation(fields: [partyId], references: [id], onDelete: Cascade)
+
+  @@index([partyId])
+  @@index([pollDate])
+}
