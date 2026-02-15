@@ -1,20 +1,28 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 
-const KEY = "disclaimer";
+const ALLOWED_KEYS = new Set(["disclaimer", "beta_note"]);
 
-export async function GET() {
-  const setting = await prisma.siteSetting.findUnique({ where: { key: KEY } });
-  return NextResponse.json({ value: setting?.value ?? "" });
+function getKeyFromRequest(req: Request): string {
+  const url = new URL(req.url);
+  const key = url.searchParams.get("key") || "disclaimer";
+  return ALLOWED_KEYS.has(key) ? key : "disclaimer";
+}
+
+export async function GET(req: Request) {
+  const key = getKeyFromRequest(req);
+  const setting = await prisma.siteSetting.findUnique({ where: { key } });
+  return NextResponse.json({ key, value: setting?.value ?? "" });
 }
 
 export async function POST(req: Request) {
-  const body = (await req.json().catch(() => ({}))) as { value?: string };
+  const key = getKeyFromRequest(req);
+  const body = (await req.json().catch(() => ({}))) as { value?: string; key?: string };
   const value = body?.value ?? "";
   await prisma.siteSetting.upsert({
-    where: { key: KEY },
+    where: { key },
     update: { value },
-    create: { key: KEY, value },
+    create: { key, value },
   });
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, key, value });
 }

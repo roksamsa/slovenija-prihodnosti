@@ -167,7 +167,7 @@ export function UserPoll() {
             <code className="rounded bg-amber-100 px-1.5 py-0.5">npm run db:seed</code>
           </p>
         </div>
-      ) : me?.hasVoted ? (
+      ) : false ? (
         <div
           className="rounded-xl border border-green-200 bg-green-50 p-4"
           role="status"

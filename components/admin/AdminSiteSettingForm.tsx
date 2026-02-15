@@ -3,7 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export function AdminSiteSettingForm({ initialValue }: { initialValue: string }) {
+type Props = {
+  initialValue: string;
+  settingKey: "disclaimer" | "beta_note";
+  placeholder?: string;
+  helper?: string;
+};
+
+export function AdminSiteSettingForm({ initialValue, settingKey, placeholder, helper }: Props) {
   const [value, setValue] = useState(initialValue);
   const [saving, setSaving] = useState(false);
   const router = useRouter();
@@ -12,7 +19,7 @@ export function AdminSiteSettingForm({ initialValue }: { initialValue: string })
     e.preventDefault();
     setSaving(true);
     try {
-      await fetch("/api/admin/site-setting", {
+      await fetch(`/api/admin/site-setting?key=${settingKey}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ value }),
@@ -30,7 +37,7 @@ export function AdminSiteSettingForm({ initialValue }: { initialValue: string })
         rows={6}
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder="Besedilo izjave o omejitvi odgovornosti…"
+        placeholder={placeholder ?? "Besedilo…"}
       />
       <div className="flex items-center gap-3">
         <button
@@ -41,7 +48,7 @@ export function AdminSiteSettingForm({ initialValue }: { initialValue: string })
           {saving ? "Shranjujem…" : "Shrani besedilo"}
         </button>
         <p className="text-xs text-slate-500">
-          Spremembe se prikažejo na vseh straneh tik nad nogo (footer).
+          {helper ?? "Spremembe se prikažejo na vseh straneh tik nad nogo (footer)."}
         </p>
       </div>
     </form>

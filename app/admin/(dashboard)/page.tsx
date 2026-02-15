@@ -18,7 +18,10 @@ export default async function AdminPage() {
   const pending = suggestions.filter((s) => s.status === "PENDING");
   const approved = suggestions.filter((s) => s.status === "APPROVED");
   const rejected = suggestions.filter((s) => s.status === "REJECTED");
-  const setting = await prisma.siteSetting.findUnique({ where: { key: "disclaimer" } });
+  const [disclaimerSetting, betaSetting] = await Promise.all([
+    prisma.siteSetting.findUnique({ where: { key: "disclaimer" } }),
+    prisma.siteSetting.findUnique({ where: { key: "beta_note" } }),
+  ]);
 
   return (
     <div>
@@ -28,7 +31,23 @@ export default async function AdminPage() {
       </p>
       <section className="mb-10 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
         <h2 className="mb-2 text-lg font-semibold text-slate-900">Omejitev odgovornosti (prikazana na vseh straneh)</h2>
-        <AdminSiteSettingForm initialValue={setting?.value ?? ""} />
+        <AdminSiteSettingForm
+          settingKey="disclaimer"
+          initialValue={disclaimerSetting?.value ?? ""}
+          placeholder="Besedilo izjave o omejitvi odgovornosti…"
+        />
+      </section>
+      <section className="mb-10 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <h2 className="mb-2 text-lg font-semibold text-slate-900">Beta obvestilo (nad nogo)</h2>
+        <AdminSiteSettingForm
+          settingKey="beta_note"
+          initialValue={
+            betaSetting?.value ??
+            "Ta aplikacija je v verziji 0.0.1 (beta). Vsi obiskovalci trenutno nastopajo kot preizkuševalci; vsebina je pripravljena z uporabo Vercel strežnika, Claude AI in urejena s Cursor/Vibe Coding. Hvala za razumevanje."
+          }
+          placeholder="Besedilo beta obvestila…"
+          helper="Prikazano tik nad nogo (footer) na vseh straneh."
+        />
       </section>
       <AdminSuggestionList
         pending={pending}

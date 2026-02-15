@@ -39,12 +39,28 @@ async function getDisclaimer() {
   }
 }
 
+async function getBetaNote() {
+  try {
+    const client = prisma as typeof prisma & { siteSetting?: typeof prisma.siteSetting };
+    if (!client.siteSetting) return "";
+    const setting = await client.siteSetting.findUnique({ where: { key: "beta_note" } });
+    return (
+      setting?.value ??
+      "Aplikacija je v verziji 0.0.1 (beta). Vsi obiskovalci trenutno nastopajo kot preizkuševalci; aplikacija gostuje na Vercelu, vsebine so povzete s pomočjo Claude AI, uredniški del pa je pripravljen v Cursor/Vibe Coding. Hvala za razumevanje."
+    );
+  } catch (err) {
+    console.error("Failed to load beta note", err);
+    return "";
+  }
+}
+
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const disclaimer = await getDisclaimer();
+  const betaNote = await getBetaNote();
   return (
     <html lang="sl">
       <body className={`${playfair.variable} ${dmSans.variable} antialiased flex min-h-screen flex-col`}>
@@ -62,6 +78,15 @@ export default async function RootLayout({
         </Script>
         <Header />
         <main className="flex-1">{children}</main>
+        <div className="bg-slate-50 border-t border-slate-200 px-4 py-6">
+          <div className="mx-auto max-w-7xl text-sm text-slate-700">
+            <h2 className="mb-2 font-semibold text-slate-900">Beta obvestilo</h2>
+            <p className="leading-relaxed">
+              {betaNote ||
+                "Aplikacija je v verziji 0.0.1 (beta). Vsi obiskovalci trenutno nastopajo kot preizkuševalci; vsebine so pripravljene s pomočjo generativnih orodij in gostujejo na Vercelu."}
+            </p>
+          </div>
+        </div>
         <div className="bg-slate-50 border-t border-slate-200 px-4 py-6">
           <div className="mx-auto max-w-7xl text-sm text-slate-600">
             <h2 className="mb-2 font-semibold text-slate-800">Omejitev odgovornosti</h2>

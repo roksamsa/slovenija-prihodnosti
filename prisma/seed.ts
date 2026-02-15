@@ -119,13 +119,25 @@ async function main() {
   console.log(`  Created ${nationalSegments.length} national segments with needs.`);
 
   // 6. Site settings
-  await prisma.siteSetting.create({
-    data: {
+  const settings = [
+    {
       key: "disclaimer",
       value:
         "Povzetki temeljijo na javno dostopnih programih, statutih in drugih uradnih virih političnih strank. Vsebina je pripravljena z avtomatizirano obdelavo, zato so možne poenostavitve ali nenamerne netočnosti. Stran ni uradni predstavnik nobene stranke in ne izraža njihovih stališč; namen je zgolj informiranje, ne politično nagovarjanje. Za popolno in zavezujočo razlago vedno preverite izvirne dokumente.",
     },
-  });
+    {
+      key: "beta_note",
+      value:
+        "Aplikacija je v verziji 0.0.1 (beta). Vsi obiskovalci trenutno nastopajo kot preizkuševalci; aplikacija gostuje na Vercelu, vsebine so povzete s pomočjo Claude AI, uredniški del pa je pripravljen v Cursor/Vibe Coding. Hvala za razumevanje.",
+    },
+  ];
+  for (const s of settings) {
+    await prisma.siteSetting.upsert({
+      where: { key: s.key },
+      update: { value: s.value },
+      create: s,
+    });
+  }
   console.log("  Created site settings.");
 
   // 7. Poll data (realistic placeholder - "vzorčni podatki")
