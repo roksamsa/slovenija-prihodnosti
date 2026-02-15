@@ -118,7 +118,17 @@ async function main() {
   }
   console.log(`  Created ${nationalSegments.length} national segments with needs.`);
 
-  // 6. Poll data (realistic placeholder - "vzorčni podatki")
+  // 6. Site settings
+  await prisma.siteSetting.create({
+    data: {
+      key: "disclaimer",
+      value:
+        "Povzetki temeljijo na javno dostopnih programih, statutih in drugih uradnih virih političnih strank. Vsebina je pripravljena z avtomatizirano obdelavo, zato so možne poenostavitve ali nenamerne netočnosti. Stran ni uradni predstavnik nobene stranke in ne izraža njihovih stališč; namen je zgolj informiranje, ne politično nagovarjanje. Za popolno in zavezujočo razlago vedno preverite izvirne dokumente.",
+    },
+  });
+  console.log("  Created site settings.");
+
+  // 7. Poll data (realistic placeholder - "vzorčni podatki")
   const pollDate = new Date("2026-02-01");
   const samplePercentages = [24, 22, 18, 12, 6, 4, 3, 2.5, 2, 1.8, 1.5, 1.2]; // sum ~97
   for (let i = 0; i < partyRecords.length; i++) {

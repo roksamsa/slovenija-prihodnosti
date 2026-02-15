@@ -162,3 +162,10 @@ model PollData {
   @@index([partyId])
   @@index([pollDate])
 }
+
+model SiteSetting {
+  key       String   @id
+  value     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
