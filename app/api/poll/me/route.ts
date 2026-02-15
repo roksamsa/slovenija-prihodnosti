@@ -28,7 +28,7 @@ export async function GET(request: Request) {
       });
     }
 
-    const vote = await prisma.pollVote.findUnique({
+    const vote = await prisma.pollVote.findFirst({
       where: { ipAddress: ip },
       include: {
         party: { select: { slug: true, name: true, color: true } },

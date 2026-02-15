@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     const ip = getClientIp(request);
 
     // Hard block per IP regardless of token/browser/incognito
-    const existingIpVote = await prisma.pollVote.findUnique({
+    const existingIpVote = await prisma.pollVote.findFirst({
       where: { ipAddress: ip },
       select: { id: true },
     });
