@@ -6,6 +6,7 @@ import { prisma } from "@/lib/db";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { CookieBanner } from "@/components/layout/CookieBanner";
 
 export const runtime = "nodejs";
 
@@ -78,6 +79,7 @@ export default async function RootLayout({
         </Script>
         <Header />
         <main className="flex-1">{children}</main>
+        <CookieBanner />
         <div className="bg-slate-50 border-t border-slate-200 px-4 py-6">
           <div className="mx-auto max-w-7xl text-sm text-slate-700">
             <h2 className="mb-2 font-semibold text-slate-900">Beta obvestilo</h2>
