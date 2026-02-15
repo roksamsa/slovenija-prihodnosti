@@ -99,6 +99,10 @@ export function UserPoll() {
       slug: r.party.slug,
     },
   }));
+  const hasVoted = !!me?.hasVoted;
+  const votedPartySlug = me?.votedPartySlug ?? null;
+  const votedPartyName = me?.votedPartyName ?? "Stranka";
+  const votedPartyColor = me?.votedPartyColor ?? undefined;
 
   return (
     <div className="space-y-6">
@@ -167,7 +171,7 @@ export function UserPoll() {
             <code className="rounded bg-amber-100 px-1.5 py-0.5">npm run db:seed</code>
           </p>
         </div>
-      ) : false ? (
+      ) : hasVoted ? (
         <div
           className="rounded-xl border border-green-200 bg-green-50 p-4"
           role="status"
@@ -176,18 +180,18 @@ export function UserPoll() {
             Vaš glas:{" "}
             <span
               className="font-semibold"
-              style={{ color: me?.votedPartyColor ?? undefined }}
+              style={{ color: votedPartyColor }}
             >
-              {me?.votedPartyName ?? ""}
+              {votedPartyName}
             </span>
           </p>
           <p className="mt-1 text-sm text-green-700">
             Iz te naprave ne morete glasovati znova. Za podrobnosti o stranki:{" "}
             <Link
-              href={me?.votedPartySlug ? `/stranke/${me.votedPartySlug}` : "#"}
+              href={votedPartySlug ? `/stranke/${votedPartySlug}` : "#"}
               className="underline hover:no-underline"
             >
-              {me?.votedPartyName ?? "Stranka"}
+              {votedPartyName}
             </Link>
           </p>
         </div>
@@ -211,19 +215,19 @@ export function UserPoll() {
                   a.party.name.localeCompare(b.party.name, "sl", { sensitivity: "base" })
                 );
                 return (
-              <select
-                value={selectedSlug}
-                onChange={(e) => setSelectedSlug(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-[var(--slovenia-blue)] focus:outline-none focus:ring-1 focus:ring-[var(--slovenia-blue)]"
-                disabled={voting}
-              >
-                <option value="">— Izberi stranko —</option>
-                {sorted.map((r) => (
-                  <option key={r.party.id} value={r.party.slug}>
-                    {r.party.name} ({r.party.abbreviation})
-                  </option>
-                ))}
-              </select>
+                  <select
+                    value={selectedSlug}
+                    onChange={(e) => setSelectedSlug(e.target.value)}
+                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-[var(--slovenia-blue)] focus:outline-none focus:ring-1 focus:ring-[var(--slovenia-blue)]"
+                    disabled={voting}
+                  >
+                    <option value="">— Izberi stranko —</option>
+                    {sorted.map((r) => (
+                      <option key={r.party.id} value={r.party.slug}>
+                        {r.party.name} ({r.party.abbreviation})
+                      </option>
+                    ))}
+                  </select>
                 );
               })()}
             </label>
