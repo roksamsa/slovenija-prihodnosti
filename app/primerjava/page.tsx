@@ -11,7 +11,15 @@ async function getData() {
         stances: {
           include: {
             party: {
-              select: { id: true, slug: true, abbreviation: true, name: true, color: true },
+              select: {
+                id: true,
+                slug: true,
+                abbreviation: true,
+                name: true,
+                color: true,
+                programUrl: true,
+                logoUrl: true,
+              },
             },
           },
         },
@@ -19,7 +27,15 @@ async function getData() {
     }),
     prisma.party.findMany({
       orderBy: { name: "asc" },
-      select: { id: true, slug: true, abbreviation: true, name: true, color: true, programUrl: true },
+      select: {
+        id: true,
+        slug: true,
+        abbreviation: true,
+        name: true,
+        color: true,
+        programUrl: true,
+        logoUrl: true,
+      },
     }),
   ]);
   const categories = [...new Set(policies.map((p) => p.category))].sort();
