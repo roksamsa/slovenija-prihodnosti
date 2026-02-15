@@ -176,18 +176,18 @@ export function UserPoll() {
             Vaš glas:{" "}
             <span
               className="font-semibold"
-              style={{ color: me.votedPartyColor ?? undefined }}
+              style={{ color: me?.votedPartyColor ?? undefined }}
             >
-              {me.votedPartyName}
+              {me?.votedPartyName ?? ""}
             </span>
           </p>
           <p className="mt-1 text-sm text-green-700">
             Iz te naprave ne morete glasovati znova. Za podrobnosti o stranki:{" "}
             <Link
-              href={`/stranke/${me.votedPartySlug}`}
+              href={me?.votedPartySlug ? `/stranke/${me.votedPartySlug}` : "#"}
               className="underline hover:no-underline"
             >
-              {me.votedPartyName}
+              {me?.votedPartyName ?? "Stranka"}
             </Link>
           </p>
         </div>
