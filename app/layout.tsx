@@ -46,6 +46,20 @@ export default function RootLayout({
         </Script>
         <Header />
         <main className="flex-1">{children}</main>
+        <div className="bg-slate-50 border-t border-slate-200 px-4 py-6">
+          <div className="mx-auto max-w-7xl text-sm text-slate-600">
+            <h2 className="mb-2 font-semibold text-slate-800">Omejitev odgovornosti</h2>
+            <p className="leading-relaxed">
+              Povzetki na tej strani temeljijo na javno dostopnih programih, statutih in drugih
+              uradnih virih političnih strank. Vsebina je pripravljena z avtomatizirano obdelavo,
+              zato so možne poenostavitve ali nenamerne netočnosti. Stran ni uradni predstavnik
+              nobene stranke in ne izraža njihovih stališč; namen je zgolj informiranje, ne
+              politično nagovarjanje. Za popolno in zavezujočo razlago vedno preverite izvirne
+              dokumente. Informativni značaj vsebine je v skladu z načelom obveščanja javnosti
+              (npr. 4. člen ZMed); uporabniki nosijo odgovornost za lastno preverjanje podatkov.
+            </p>
+          </div>
+        </div>
         <Footer />
         <Analytics />
       </body>
